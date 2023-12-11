@@ -39,9 +39,4 @@ class RemoveExternalAppCommand extends Command
             }
         }
     }
-
-    private function removeById(int $id)
-    {
-
-    }
 }

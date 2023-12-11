@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CompositionController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -14,6 +15,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::prefix('composition')->middleware(['auth:sanctum'])->group(function () {
+    Route::post('/create', [CompositionController::class, 'create']);
+    Route::get('/{composition}', function (\App\Models\Composition $composition) {
+        return $composition->with('composers')->with('files')->get();
+    });
 });
