@@ -9,7 +9,7 @@ return new class extends Migration {
     {
         Schema::create('composition_files', function (Blueprint $table) {
             $table->id();
-            $table->string('local_path');
+            $table->string('path');
             $table->foreignId('composition_id')->constrained();
             $table->timestamps();
         });
