@@ -9,40 +9,54 @@ class ComposerController extends Controller
 {
     public function index()
     {
-        return Composer::all();
+        return Composer::with(['compositions'])->paginate();
     }
 
-    public function store(Request $request)
+    public function create(Request $request)
     {
         $data = $request->validate([
-            'name' => ['required'],
-            'description' => ['required'],
+            'name' => ['required', 'string'],
+            'description' => ['string', 'nullable'],
+            'compositions' => ['array'],
+            'compositions.*' => ['int']
         ]);
-
-        return Composer::create($data);
+        $composer = Composer::create($data);
+        if ($compositions = $request->compositions) {
+            $composer->compositions()->sync($compositions, false);
+        }
+        $composer->load('compositions');
+        return $composer;
     }
 
-    public function show(Composer $composer)
+    public function get(Composer $composer)
     {
-        return $composer;
+        return $composer->with('compositions');
     }
 
     public function update(Request $request, Composer $composer)
     {
         $data = $request->validate([
-            'name' => ['required'],
-            'description' => ['required'],
+            'name' => ['string'],
+            'description' => ['string', 'nullable'],
+            'compositions' => ['array'],
+            'compositions.*' => ['int'],
+            'detach' => ['array'],
+            'detach.*' => ['int'],
         ]);
-
         $composer->update($data);
-
+        if ($compositions = $request->compositions) {
+            $composer->compositions()->sync($compositions, false);
+        }
+        if ($detach = $request->detach) {
+            $composer->compositions()->detach($detach);
+        }
+        $composer->load('compositions');
         return $composer;
     }
 
-    public function destroy(Composer $composer)
+    public function delete(Composer $composer)
     {
         $composer->delete();
-
-        return response()->json();
+        return response()->noContent();
     }
 }

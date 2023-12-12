@@ -18,6 +18,8 @@ class Composition extends Model
         'name', 'description'
     ];
 
+    protected $hidden = ['pivot'];
+
     public function composers(): BelongsToMany
     {
         return $this->belongsToMany(Composer::class);
