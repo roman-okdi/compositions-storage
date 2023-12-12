@@ -4,9 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateCompositionRequest;
 use App\Models\Composition;
-use App\Models\CompositionFile;
 use Illuminate\Http\Request;
-use Storage;
 
 class CompositionController extends Controller
 {

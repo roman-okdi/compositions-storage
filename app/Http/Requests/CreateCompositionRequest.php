@@ -32,10 +32,13 @@ class CreateCompositionRequest extends FormRequest
     {
         $model = Composition::create([
             'name' => $this->name,
-            'description' => $this->description
+            'description' => $this->description,
         ]);
-        foreach ($this->get('files') as $file) {
-            $model->saveFile($file['name'], base64_decode($file['data']));
+        $model->composers->append(3);
+        if ($files = $this->get('files')) {
+            foreach ($files as $file) {
+                $model->saveFile($file['name'], base64_decode($file['data']));
+            }
         }
         return $model->loadAllDependencies();
     }
