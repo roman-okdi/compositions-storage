@@ -22,4 +22,8 @@ class Composition extends Model
     {
         return $this->hasMany(CompositionFile::class);
     }
+
+    static function saveBase64File($data, $name) {
+
+    }
 }

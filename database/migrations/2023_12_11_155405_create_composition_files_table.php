@@ -10,6 +10,7 @@ return new class extends Migration {
         Schema::create('composition_files', function (Blueprint $table) {
             $table->id();
             $table->string('path');
+            $table->string('disk');
             $table->foreignId('composition_id')->constrained();
             $table->timestamps();
         });
