@@ -9,6 +9,11 @@ use Illuminate\Http\Request;
 class CompositionController extends Controller
 {
 
+    public function index()
+    {
+        return Composition::with(['files', 'composers'])->paginate();
+    }
+
     public function create(CreateCompositionRequest $request)
     {
         return $request->createComposition();
@@ -34,10 +39,5 @@ class CompositionController extends Controller
     public function get(Composition $composition)
     {
         return $composition->load('files')->load('composers');
-    }
-
-    public function paging()
-    {
-        return Composition::with(['files', 'composers'])->paginate();
     }
 }

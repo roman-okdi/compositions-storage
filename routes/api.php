@@ -19,7 +19,7 @@ use Illuminate\Http\Request;
 
 Route::middleware(['auth:sanctum'])->group(function () {
 
-    Route::get('compositions', [CompositionController::class, 'paging']);
+    Route::get('compositions', [CompositionController::class, 'index']);
     Route::prefix('composition')->group(function () {
 
         Route::get('{composition}', [CompositionController::class, 'get']);
