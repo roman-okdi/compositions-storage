@@ -3,10 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Models\Composition;
-use App\Models\CompositionFile;
 use Illuminate\Foundation\Http\FormRequest;
-use Nette\Utils\Random;
-use Storage;
 
 /**
  * @property string $name
@@ -37,24 +34,9 @@ class CreateCompositionRequest extends FormRequest
             'name' => $this->name,
             'description' => $this->description
         ]);
-        $diskName = 'compositions';
-        $disk = Storage::disk($diskName);
         foreach ($this->get('files') as $file) {
-            $data = base64_decode($file['data']);
-            $path = "$model->id/{$file['name']}";
-            while ($disk->exists($path)) {
-                $pattern = "/(.*)(\.\w+$)/";
-                $random = Random::generate(4);
-                $path = preg_replace($pattern, "$1_$random$2", $path);
-            }
-            if ($disk->put($path, $data)) {
-                CompositionFile::create([
-                    'disk' => $diskName,
-                    'path' => $path,
-                    'composition_id' => $model->id
-                ]);
-            }
+            $model->saveFile($file['name'], base64_decode($file['data']));
         }
-        return $model->load('files');
+        return $model->loadAllDependencies();
     }
 }

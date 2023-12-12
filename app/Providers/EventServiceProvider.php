@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Models\Composition;
+use App\Models\CompositionFile;
 use App\Models\ExternalApplication;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
@@ -28,6 +30,13 @@ class EventServiceProvider extends ServiceProvider
         ExternalApplication::deleting(function (ExternalApplication $app) {
             foreach ($app->tokens as $token) {
                 $token->delete();
+            }
+        });
+        Composition::onDelete(function (Composition $model) {
+            $disk = \Storage::disk('compositions');
+            $disk->deleteDirectory($model->id);
+            foreach ($model->files as $file) {
+                $file->delete();
             }
         });
     }

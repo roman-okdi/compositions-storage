@@ -1,6 +1,9 @@
 <?php
 
 use App\Http\Controllers\CompositionController;
+use App\Http\Controllers\CompositionFileController;
+use App\Models\Composition;
+use App\Models\CompositionFile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -15,9 +18,22 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::prefix('composition')->middleware(['auth:sanctum'])->group(function () {
-    Route::post('/create', [CompositionController::class, 'create']);
-    Route::get('/{composition}', function (\App\Models\Composition $composition) {
-        return $composition->with('composers')->with('files')->get();
+Route::middleware(['auth:sanctum'])->group(function () {
+
+    Route::get('compositions', [CompositionController::class, 'paging']);
+    Route::prefix('composition')->group(function () {
+
+        Route::post('create', [CompositionController::class, 'create']);
+        Route::get('{composition}', [CompositionController::class, 'get']);
+        Route::delete('{composition}', [CompositionController::class, 'delete']);
+        Route::patch('{composition}', [CompositionController::class, 'update']);
+
+        Route::get('{composition}/files', [CompositionFileController::class, 'getAll']);
+        Route::post('{composition}/files/add', [CompositionFileController::class, 'create']);
+
+        Route::prefix('file')->group(function () {
+            Route::get('{file}', [CompositionFileController::class, 'index'])->name('composition.file');
+            Route::delete('{file}', [CompositionFileController::class, 'delete']);
+        });
     });
 });
